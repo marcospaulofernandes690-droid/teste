@@ -13,30 +13,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # 1. CI - Execução dos Testes
-      - name: Run tests
-        run: |
-          python -m unittest test_conversor.py
+    # 1. INTEGRAÇÃO CONTÍNUA (CI) - Executa os testes
+    - name: Run tests
+      run: |
+        python -m unittest test_conversor.py
 
-      # 2. CD - Empacotamento
-      - name: Package project
-        run: zip -r conversor.zip . -x ".git"
+    # 2. ENTREGA CONTÍNUA (CD) - Empacota o projeto em ZIP
+    - name: Package project
+      run: zip -r conversor.zip . -x ".git"
 
-      # 3. CD - Upload do Artefato (Versão v4 atualizada)
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: conversor-artifact
-          path: conversor.zip
+    # 3. UPLOAD DO ARTEFATO (CD)
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: conversor-artifact
+        path: conversor.zip
